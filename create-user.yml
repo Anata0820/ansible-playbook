@@ -1,0 +1,33 @@
+---
+- name: Add user to MySQL database
+  hosts: mysql
+  become: true
+  become_user: mysql 
+  vars:
+    username: Nathan Gray
+    uid: 1001
+    gid: 1001
+    homedir: /home/nathangray
+  tasks:
+    - name: Insert user into database
+      mysql_db:
+        login_user: "{{ anata }}"
+        login_password: "{{ Jannaibapigray280122 }}"
+        login_endpoint: "{{ terraform-20230327080440539600000001.cd8adlfhbu6m.ap-southeast-2.rds.amazonaws.com }}"
+        name: "devxDatabase123"
+        login_port: 3306
+        state: present 
+      register: db_result
+
+    - name: Insert user data into table
+      mysql_query:
+        login_user: "{{ anata }}"
+        login_password: "{{ Jannaibapigray280122 }}"
+        login_endpoint: "{{ terraform-20230327080440539600000001.cd8adlfhbu6m.ap-southeast-2.rds.amazonaws.com }}"
+        db: "devxDatabase123"
+        login_port: 3306
+        query: >
+          INSERT INTO users (username, UID, GID, homedir)
+          VALUES ("{{ username }}", "{{ uid }}", "{{ gid }}", "{{ homedir }}")
+      when: db_result.changed
+
